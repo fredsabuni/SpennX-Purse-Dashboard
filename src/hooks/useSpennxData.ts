@@ -17,7 +17,8 @@ export const useDashboardStats = (params?: { start_date?: string; end_date?: str
             const { data } = await spennxApi.getDashboardStats(params);
             return data as DashboardStats;
         },
-        refetchInterval: 30000,
+        refetchInterval: 30000, // 30 seconds - core metrics
+        staleTime: 15000, // Consider data stale after 15 seconds
     });
 };
 
@@ -29,7 +30,8 @@ export const useLiveView = (params?: { start_date?: string; end_date?: string })
             const { data } = await spennxApi.getLiveView(params);
             return data as TransactionsLiveView;
         },
-        refetchInterval: 60000,
+        refetchInterval: 45000, // 45 seconds - live view data
+        staleTime: 20000,
     });
 };
 
@@ -41,7 +43,8 @@ export const useTransactionPulse = (params?: { start_date?: string; end_date?: s
             const { data } = await spennxApi.getTransactionPulse(params);
             return data as TransactionPulse;
         },
-        refetchInterval: 10000,
+        refetchInterval: 15000, // 15 seconds - most critical real-time data
+        staleTime: 10000,
     });
 };
 
@@ -53,7 +56,8 @@ export const useNetIncome = (params?: { start_date?: string; end_date?: string }
             const { data } = await spennxApi.getNetIncome(params);
             return data as NetIncomeStats;
         },
-        refetchInterval: 30000,
+        refetchInterval: 60000, // 1 minute - financial data
+        staleTime: 30000,
     });
 };
 
@@ -70,7 +74,8 @@ export const useTransactions = (params?: {
             const { data } = await spennxApi.getTransactions(params);
             return data as Transaction[];
         },
-        refetchInterval: 30000,
+        refetchInterval: 30000, // 30 seconds
+        staleTime: 15000,
     });
 };
 
@@ -83,6 +88,8 @@ export const useTransaction = (id: string) => {
             return data as Transaction;
         },
         enabled: !!id,
+        refetchInterval: 20000, // 20 seconds for individual transaction
+        staleTime: 10000,
     });
 };
 
@@ -94,6 +101,7 @@ export const useDailyTrend = (params?: { start_date?: string; end_date?: string 
             const { data } = await spennxApi.getDailyTrend(params);
             return data as DailyTrendData;
         },
-        refetchInterval: 60000,
+        refetchInterval: 120000, // 2 minutes - historical trend data
+        staleTime: 60000,
     });
 };

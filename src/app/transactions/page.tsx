@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { DateRangePicker } from '@/components/dashboard/DateRangePicker';
+import { RefreshControl } from '@/components/ui/RefreshControl';
+import { DailyTrendChart } from '@/components/charts/DailyTrendChart';
 import { TransactionOverviewWidget } from '@/components/transactions/TransactionOverviewWidget';
 import { StatusPieChart } from '@/components/transactions/StatusPieChart';
 import { CurrencyVolumeChart } from '@/components/transactions/CurrencyVolumeChart';
@@ -10,6 +12,8 @@ import {
     useStatusBreakdown, 
     useCurrencyBreakdown 
 } from '@/hooks/useAnalyticsData';
+import { useDailyTrend } from '@/hooks/useSpennxData';
+import { MOCK_DAILY_TREND } from '@/lib/mock-data';
 import { Bell, Download } from 'lucide-react';
 
 export default function TransactionsPage() {
@@ -20,6 +24,7 @@ export default function TransactionsPage() {
         end_date: dateRange.end
     };
 
+    const { data: dailyTrendData, isLoading: dailyTrendLoading } = useDailyTrend(queryParams);
     const { data: overviewData, isLoading: overviewLoading } = useTransactionOverview(queryParams);
     const { data: statusData, isLoading: statusLoading } = useStatusBreakdown(queryParams);
     
@@ -28,6 +33,7 @@ export default function TransactionsPage() {
     const { data: lastWeekData, isLoading: lastWeekLoading } = useCurrencyBreakdown({ interval: 'previous_week' });
     const { data: lastMonthData, isLoading: lastMonthLoading } = useCurrencyBreakdown({ interval: 'previous_month' });
 
+    const dailyTrend = dailyTrendData || MOCK_DAILY_TREND;
     const currencyLoading = yesterdayLoading || lastWeekLoading || lastMonthLoading;
 
     return (
@@ -47,11 +53,25 @@ export default function TransactionsPage() {
                         className="w-full sm:w-auto"
                     />
                     
+                    <RefreshControl 
+                        isLoading={dailyTrendLoading || overviewLoading || statusLoading || currencyLoading}
+                        lastUpdated={new Date()}
+                        className="w-full sm:w-auto"
+                    />
+                    
                     <button className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#1F1F1F] bg-[#1F1F1F] text-xs font-medium text-gray-300 hover:text-white transition-colors">
                         <Download className="h-3.5 w-3.5" />
                         Export
                     </button>
                 </div>
+            </div>
+
+            {/* Daily Transaction Trends */}
+            <div>
+                <DailyTrendChart 
+                    data={dailyTrend} 
+                    loading={dailyTrendLoading} 
+                />
             </div>
 
             {/* Overview Section */}

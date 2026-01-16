@@ -1,14 +1,14 @@
 'use client';
 import { useState } from 'react';
-import { useDashboardStats, useLiveView, useTransactionPulse, useDailyTrend } from '@/hooks/useSpennxData';
+import { useDashboardStats, useLiveView, useTransactionPulse } from '@/hooks/useSpennxData';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { VolumeChart } from '@/components/charts/VolumeChart';
-import { DailyTrendChart } from '@/components/charts/DailyTrendChart';
 import { PeriodStatsTable } from '@/components/dashboard/PeriodStatsTable';
 // import { IncomePulseWidget } from '@/components/dashboard/IncomePulseWidget';
 import { DateRangePicker } from '@/components/dashboard/DateRangePicker';
+import { RefreshControl } from '@/components/ui/RefreshControl';
 import { DollarSign, TrendingUp, Users, AlertCircle, Zap, Bell } from 'lucide-react';
-import { MOCK_STATS, MOCK_LIVE_VIEW, MOCK_PULSE, MOCK_DAILY_TREND } from '@/lib/mock-data';
+import { MOCK_STATS, MOCK_LIVE_VIEW, MOCK_PULSE } from '@/lib/mock-data';
 
 // Calculate percentage change between two values
 const calculateTrend = (current: number | string, previous: number | string) => {
@@ -41,14 +41,12 @@ export default function DashboardPage() {
   const { data: statsData, isLoading: statsLoading } = useDashboardStats({ start_date: dateRange.start, end_date: dateRange.end });
   const { data: liveViewData, isLoading: liveViewLoading } = useLiveView({ start_date: dateRange.start, end_date: dateRange.end });
   const { data: pulseData, isLoading: pulseLoading } = useTransactionPulse({ start_date: dateRange.start, end_date: dateRange.end });
-  const { data: dailyTrendData, isLoading: dailyTrendLoading } = useDailyTrend({ start_date: dateRange.start, end_date: dateRange.end });
   // const { data: netIncomeData, isLoading: netIncomeLoading } = useNetIncome({ start_date: dateRange.start, end_date: dateRange.end });
 
   // Use Mock Data only if data is missing (e.g. API error or not connected)
   const stats = statsData || MOCK_STATS;
   const liveView = liveViewData || MOCK_LIVE_VIEW;
   const pulse = pulseData || MOCK_PULSE;
-  const dailyTrend = dailyTrendData || MOCK_DAILY_TREND;
   // const netIncome = netIncomeData || MOCK_NET_INCOME;
 
   // Helper to parse numbers that might be formatted strings (e.g., "45,000" -> 45000)
@@ -99,6 +97,11 @@ export default function DashboardPage() {
         <div className="flex flex-wrap items-center gap-2 md:gap-4">
              <DateRangePicker 
                 onRangeChange={(range) => setDateRange(range)} 
+                className="mr-2"
+             />
+             <RefreshControl 
+                isLoading={statsLoading || liveViewLoading || pulseLoading}
+                lastUpdated={new Date()}
                 className="mr-2"
              />
              <div className="hidden md:flex items-center gap-2 text-xs text-gray-500 bg-[#1F1F1F] px-3 py-1.5 rounded-full border border-[#1F1F1F]">
@@ -172,11 +175,6 @@ export default function DashboardPage() {
         {/* <div>
             <IncomePulseWidget data={netIncome} loading={netIncomeLoading} />
         </div> */}
-      </div>
-
-      {/* Row 2.5: Daily Transaction Trends */}
-      <div>
-        <DailyTrendChart data={dailyTrend} loading={dailyTrendLoading} />
       </div>
 
       {/* Row 3: Detail Period Breakdown */}

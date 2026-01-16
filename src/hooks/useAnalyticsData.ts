@@ -13,7 +13,8 @@ export const useTransactionOverview = (params?: { start_date?: string; end_date?
             const { data } = await spennxApi.getTransactionOverview(params);
             return data as TransactionOverview;
         },
-        refetchInterval: 30000,
+        refetchInterval: 45000, // 45 seconds - overview analytics
+        staleTime: 20000,
     });
 };
 
@@ -24,7 +25,8 @@ export const useStatusBreakdown = (params?: { start_date?: string; end_date?: st
             const { data } = await spennxApi.getStatusBreakdown(params);
             return data as StatusBreakdown;
         },
-        refetchInterval: 30000,
+        refetchInterval: 60000, // 1 minute - status breakdown
+        staleTime: 30000,
     });
 };
 
@@ -35,6 +37,7 @@ export const useCurrencyBreakdown = (params?: { start_date?: string; end_date?: 
             const { data } = await spennxApi.getCurrencyBreakdown(params);
             return data as CurrencyBreakdown[];
         },
-        refetchInterval: 30000,
+        refetchInterval: 90000, // 1.5 minutes - currency analytics
+        staleTime: 45000,
     });
 };
