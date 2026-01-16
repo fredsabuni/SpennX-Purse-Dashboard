@@ -1,4 +1,4 @@
-import { DashboardStats, TransactionsLiveView, TransactionPulse, NetIncomeStats, PartnerFlow, CountryCurrencyVolume } from "./types";
+import { DashboardStats, TransactionsLiveView, TransactionPulse, NetIncomeStats, PartnerFlow, CountryCurrencyVolume, DailyTrendData } from "./types";
 
 export const MOCK_STATS: DashboardStats = {
     total_transactions: 12543,
@@ -43,6 +43,101 @@ export const MOCK_LIVE_VIEW: TransactionsLiveView = {
     current_month: createPeriodStats('This Month', 1200000),
     previous_month: createPeriodStats('Last Month', 1100000),
     year_to_date: createPeriodStats('YTD', 15000000)
+};
+
+export const MOCK_DAILY_TREND: DailyTrendData = {
+    start_date: '2026-01-01',
+    end_date: '2026-01-07',
+    total_days: 7,
+    daily_data: [
+        {
+            date: '2026-01-01',
+            transaction_count: 145,
+            success_count: 132,
+            failed_count: 5,
+            pending_count: 8,
+            total_volume_usd: '14,250.00',
+            total_revenue_usd: '285.00',
+            avg_transaction_size_usd: '98.27',
+            success_rate: 91.03
+        },
+        {
+            date: '2026-01-02',
+            transaction_count: 178,
+            success_count: 165,
+            failed_count: 3,
+            pending_count: 10,
+            total_volume_usd: '18,900.00',
+            total_revenue_usd: '378.00',
+            avg_transaction_size_usd: '106.18',
+            success_rate: 92.70
+        },
+        {
+            date: '2026-01-03',
+            transaction_count: 156,
+            success_count: 142,
+            failed_count: 7,
+            pending_count: 7,
+            total_volume_usd: '16,450.00',
+            total_revenue_usd: '329.00',
+            avg_transaction_size_usd: '105.45',
+            success_rate: 91.03
+        },
+        {
+            date: '2026-01-04',
+            transaction_count: 192,
+            success_count: 180,
+            failed_count: 4,
+            pending_count: 8,
+            total_volume_usd: '21,300.00',
+            total_revenue_usd: '426.00',
+            avg_transaction_size_usd: '110.94',
+            success_rate: 93.75
+        },
+        {
+            date: '2026-01-05',
+            transaction_count: 168,
+            success_count: 155,
+            failed_count: 6,
+            pending_count: 7,
+            total_volume_usd: '17,800.00',
+            total_revenue_usd: '356.00',
+            avg_transaction_size_usd: '105.95',
+            success_rate: 92.26
+        },
+        {
+            date: '2026-01-06',
+            transaction_count: 201,
+            success_count: 188,
+            failed_count: 5,
+            pending_count: 8,
+            total_volume_usd: '22,500.00',
+            total_revenue_usd: '450.00',
+            avg_transaction_size_usd: '111.94',
+            success_rate: 93.53
+        },
+        {
+            date: '2026-01-07',
+            transaction_count: 185,
+            success_count: 172,
+            failed_count: 4,
+            pending_count: 9,
+            total_volume_usd: '19,800.00',
+            total_revenue_usd: '396.00',
+            avg_transaction_size_usd: '107.03',
+            success_rate: 92.97
+        }
+    ],
+    summary: {
+        total_transactions: 1225,
+        total_success: 1134,
+        overall_success_rate: 92.57,
+        total_volume_usd: '131,000.00',
+        total_revenue_usd: '2,620.00',
+        avg_daily_transactions: 175,
+        avg_daily_volume_usd: '18,714.29',
+        avg_transaction_size_usd: '106.94'
+    }
 };
 
 export const MOCK_TOP_COUNTRIES: CountryCurrencyVolume[] = [

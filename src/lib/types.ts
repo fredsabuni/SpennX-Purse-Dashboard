@@ -138,3 +138,32 @@ export interface CurrencyBreakdown {
     avg_transaction_size: number;
     percentage_of_total: number;
 }
+
+export interface DailyTrendDataPoint {
+    date: string;
+    transaction_count: number;
+    success_count: number;
+    failed_count: number;
+    pending_count: number;
+    total_volume_usd: string | number;
+    total_revenue_usd: string | number;
+    avg_transaction_size_usd: string | number;
+    success_rate: number;
+}
+
+export interface DailyTrendData {
+    start_date: string;
+    end_date: string;
+    total_days: number;
+    daily_data: DailyTrendDataPoint[];
+    summary: {
+        total_transactions: number;
+        total_success: number;
+        overall_success_rate: number;
+        total_volume_usd: string | number;
+        total_revenue_usd: string | number;
+        avg_daily_transactions: number;
+        avg_daily_volume_usd: string | number;
+        avg_transaction_size_usd: string | number;
+    };
+}

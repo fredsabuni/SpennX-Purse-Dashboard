@@ -6,6 +6,7 @@ import type {
     TransactionPulse,
     NetIncomeStats,
     Transaction,
+    DailyTrendData,
 } from '@/lib/types';
 
 // Dashboard Stats
@@ -82,5 +83,17 @@ export const useTransaction = (id: string) => {
             return data as Transaction;
         },
         enabled: !!id,
+    });
+};
+
+// Daily Trend
+export const useDailyTrend = (params?: { start_date?: string; end_date?: string }) => {
+    return useQuery({
+        queryKey: ['dailyTrend', params],
+        queryFn: async () => {
+            const { data } = await spennxApi.getDailyTrend(params);
+            return data as DailyTrendData;
+        },
+        refetchInterval: 60000,
     });
 };
