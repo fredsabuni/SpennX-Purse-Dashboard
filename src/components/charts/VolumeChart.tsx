@@ -38,12 +38,14 @@ export function VolumeChart({ data, loading }: VolumeChartProps) {
           <AreaChart data={data} margin={{ top: 10, right: 5, left: -10, bottom: 0 }}>
             <defs>
               <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#317CFF" stopOpacity={0.3}/>
-                <stop offset="95%" stopColor="#317CFF" stopOpacity={0}/>
+                <stop offset="5%" stopColor="#317CFF" stopOpacity={0.8}/>
+                <stop offset="50%" stopColor="#1F1F1F" stopOpacity={0.4}/>
+                <stop offset="95%" stopColor="#0A0A0A" stopOpacity={0.1}/>
               </linearGradient>
               <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#4CCDF6" stopOpacity={0.3}/>
-                <stop offset="95%" stopColor="#4CCDF6" stopOpacity={0}/>
+                <stop offset="5%" stopColor="#317CFF" stopOpacity={0.6}/>
+                <stop offset="50%" stopColor="#1F1F1F" stopOpacity={0.3}/>
+                <stop offset="95%" stopColor="#0A0A0A" stopOpacity={0.05}/>
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#1F1F1F" vertical={false} />
@@ -91,7 +93,7 @@ export function VolumeChart({ data, loading }: VolumeChartProps) {
             <Area 
               type="monotone" 
               dataKey="revenue" 
-              stroke="#4CCDF6" 
+              stroke="#317CFF" 
               strokeWidth={2}
               fillOpacity={1} 
               fill="url(#colorRevenue)" 

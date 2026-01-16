@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { DateRangePicker } from '@/components/dashboard/DateRangePicker';
 import { RefreshControl } from '@/components/ui/RefreshControl';
-import { DailyTrendChart } from '@/components/charts/DailyTrendChart';
 import { TransactionOverviewWidget } from '@/components/transactions/TransactionOverviewWidget';
 import { StatusPieChart } from '@/components/transactions/StatusPieChart';
 import { CurrencyVolumeChart } from '@/components/transactions/CurrencyVolumeChart';
@@ -12,8 +11,6 @@ import {
     useStatusBreakdown, 
     useCurrencyBreakdown 
 } from '@/hooks/useAnalyticsData';
-import { useDailyTrend } from '@/hooks/useSpennxData';
-import { MOCK_DAILY_TREND } from '@/lib/mock-data';
 import { Bell, Download } from 'lucide-react';
 
 export default function TransactionsPage() {
@@ -24,7 +21,6 @@ export default function TransactionsPage() {
         end_date: dateRange.end
     };
 
-    const { data: dailyTrendData, isLoading: dailyTrendLoading } = useDailyTrend(queryParams);
     const { data: overviewData, isLoading: overviewLoading } = useTransactionOverview(queryParams);
     const { data: statusData, isLoading: statusLoading } = useStatusBreakdown(queryParams);
     
@@ -33,7 +29,6 @@ export default function TransactionsPage() {
     const { data: lastWeekData, isLoading: lastWeekLoading } = useCurrencyBreakdown({ interval: 'previous_week' });
     const { data: lastMonthData, isLoading: lastMonthLoading } = useCurrencyBreakdown({ interval: 'previous_month' });
 
-    const dailyTrend = dailyTrendData || MOCK_DAILY_TREND;
     const currencyLoading = yesterdayLoading || lastWeekLoading || lastMonthLoading;
 
     return (
@@ -54,7 +49,7 @@ export default function TransactionsPage() {
                     />
                     
                     <RefreshControl 
-                        isLoading={dailyTrendLoading || overviewLoading || statusLoading || currencyLoading}
+                        isLoading={overviewLoading || statusLoading || currencyLoading}
                         lastUpdated={new Date()}
                         className="w-full sm:w-auto"
                     />
@@ -64,14 +59,6 @@ export default function TransactionsPage() {
                         Export
                     </button>
                 </div>
-            </div>
-
-            {/* Daily Transaction Trends */}
-            <div>
-                <DailyTrendChart 
-                    data={dailyTrend} 
-                    loading={dailyTrendLoading} 
-                />
             </div>
 
             {/* Overview Section */}
