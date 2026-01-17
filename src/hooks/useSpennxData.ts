@@ -7,6 +7,7 @@ import type {
     NetIncomeStats,
     Transaction,
     DailyTrendData,
+    TodayTransactionsData,
 } from '@/lib/types';
 
 // Dashboard Stats
@@ -103,5 +104,18 @@ export const useDailyTrend = (params?: { start_date?: string; end_date?: string 
         },
         refetchInterval: 120000, // 2 minutes - historical trend data
         staleTime: 60000,
+    });
+};
+
+// Today's Transactions
+export const useTodayTransactions = () => {
+    return useQuery({
+        queryKey: ['todayTransactions'],
+        queryFn: async () => {
+            const { data } = await spennxApi.getTodayTransactions();
+            return data as TodayTransactionsData;
+        },
+        refetchInterval: 30000, // 30 seconds - real-time today data
+        staleTime: 15000,
     });
 };

@@ -167,3 +167,32 @@ export interface DailyTrendData {
         avg_transaction_size_usd: string | number;
     };
 }
+
+export interface TodayTransaction {
+    id: string;
+    time: string;
+    created_at: string;
+    status: 'success' | 'pending' | 'failed' | 'declined' | 'reversed' | 'processing_swap' | 'onchain';
+    amount: string;
+    currency: string;
+    amount_usd: string;
+    charge: string;
+    charge_usd: string;
+    type: string;
+    description: string;
+    from_wallet: string | null;
+    to_wallet: string | null;
+    recipient_name: string | null;
+    recipient_country: string | null;
+}
+
+export interface TodayTransactionsData {
+    date: string;
+    total_count: number;
+    success_count: number;
+    pending_count: number;
+    failed_count: number;
+    total_volume_usd: string;
+    total_revenue_usd: string;
+    transactions: TodayTransaction[];
+}

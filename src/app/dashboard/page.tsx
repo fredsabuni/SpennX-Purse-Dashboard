@@ -1,9 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { useDashboardStats, useLiveView, useTransactionPulse, useDailyTrend } from '@/hooks/useSpennxData';
+import { useDashboardStats, useLiveView, useTransactionPulse, useDailyTrend, useTodayTransactions } from '@/hooks/useSpennxData';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { VolumeChart } from '@/components/charts/VolumeChart';
 import { DailyTrendChart } from '@/components/charts/DailyTrendChart';
+import { TodayTransactionsChart } from '@/components/charts/TodayTransactionsChart';
 import { PeriodStatsTable } from '@/components/dashboard/PeriodStatsTable';
 // import { IncomePulseWidget } from '@/components/dashboard/IncomePulseWidget';
 import { DateRangePicker } from '@/components/dashboard/DateRangePicker';
@@ -43,6 +44,7 @@ export default function DashboardPage() {
   const { data: liveViewData, isLoading: liveViewLoading } = useLiveView({ start_date: dateRange.start, end_date: dateRange.end });
   const { data: pulseData, isLoading: pulseLoading } = useTransactionPulse({ start_date: dateRange.start, end_date: dateRange.end });
   const { data: dailyTrendData, isLoading: dailyTrendLoading } = useDailyTrend({ start_date: dateRange.start, end_date: dateRange.end });
+  const { data: todayTransactionsData, isLoading: todayTransactionsLoading } = useTodayTransactions();
   // const { data: netIncomeData, isLoading: netIncomeLoading } = useNetIncome({ start_date: dateRange.start, end_date: dateRange.end });
 
   // Use Mock Data only if data is missing (e.g. API error or not connected)
@@ -103,7 +105,7 @@ export default function DashboardPage() {
                 className="mr-2"
              />
              <RefreshControl 
-                isLoading={statsLoading || liveViewLoading || pulseLoading || dailyTrendLoading}
+                isLoading={statsLoading || liveViewLoading || pulseLoading || dailyTrendLoading || todayTransactionsLoading}
                 lastUpdated={new Date()}
                 className="mr-2"
              />
@@ -170,12 +172,17 @@ export default function DashboardPage() {
         /> */}
       </div>
 
-      {/* Row 2: Daily Transaction Trends */}
+      {/* Row 2: Today's Transactions */}
+      <div>
+        <TodayTransactionsChart data={todayTransactionsData || null} loading={todayTransactionsLoading} />
+      </div>
+
+      {/* Row 3: Daily Transaction Trends */}
       <div>
         <DailyTrendChart data={dailyTrend} loading={dailyTrendLoading} />
       </div>
 
-      {/* Row 3: Transaction Volume Chart */}
+      {/* Row 4: Transaction Volume Chart */}
       <div className="grid gap-6 lg:grid-cols-1">
         <div>
             <VolumeChart data={chartData} loading={liveViewLoading} />
@@ -185,7 +192,7 @@ export default function DashboardPage() {
         </div> */}
       </div>
 
-      {/* Row 4: Detail Period Breakdown */}
+      {/* Row 5: Detail Period Breakdown */}
       <div>
            <PeriodStatsTable liveView={liveView} loading={liveViewLoading} />
       </div>

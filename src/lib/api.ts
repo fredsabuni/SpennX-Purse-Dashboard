@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://spennx.kasuku.xyz'; http://0.0.0.0:8000
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://spennx.kasuku.xyz'; 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://spennx.kasuku.xyz';
 
 export const apiClient = axios.create({
     baseURL: API_BASE_URL,
@@ -50,4 +50,7 @@ export const spennxApi = {
 
     // Daily Trend
     getDailyTrend: (params?: { start_date?: string; end_date?: string }) => apiClient.get('/api/analytics/daily-trend', { params }),
+
+    // Today's Transactions
+    getTodayTransactions: () => apiClient.get('/api/transactions/today'),
 };
