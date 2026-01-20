@@ -127,7 +127,7 @@ export default function DashboardPage() {
       <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <StatsCard
           title="Transactions (Today)"
-          value={Number(liveView.today.total_transactions || 0).toLocaleString()}
+          value={parseNumber(liveView.today.total_transactions || 0).toLocaleString()}
           icon={Zap}
           description={`${Number(pulse?.transactions_per_minute || 0)} / min`}
           trend={calculateTrend(
@@ -139,7 +139,7 @@ export default function DashboardPage() {
         />
         <StatsCard
           title="Volume (Today)"
-          value={`$${Number(liveView.today.total_volume || 0).toLocaleString()}`}
+          value={`$${parseNumber(liveView.today.total_volume || 0).toLocaleString()}`}
           icon={DollarSign}
           description="Total value moved"
           trend={calculateTrend(
@@ -150,7 +150,7 @@ export default function DashboardPage() {
         />
          <StatsCard
           title="Net Revenue (Today)"
-          value={`$${Number(liveView.today.net_revenue || 0).toLocaleString()}`}
+          value={`$${parseNumber(liveView.today.net_revenue || 0).toLocaleString()}`}
           icon={TrendingUp}
           description="After fees"
           trend={calculateTrend(
