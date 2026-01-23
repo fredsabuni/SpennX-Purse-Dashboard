@@ -95,7 +95,7 @@ export const useTransaction = (id: string) => {
 };
 
 // Daily Trend
-export const useDailyTrend = (params?: { start_date?: string; end_date?: string }) => {
+export const useDailyTrend = (params?: { start_date?: string; end_date?: string; interval?: string }) => {
     return useQuery({
         queryKey: ['dailyTrend', params],
         queryFn: async () => {

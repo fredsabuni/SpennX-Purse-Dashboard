@@ -152,7 +152,7 @@ export function TodayTransactionsChart({ data, loading }: TodayTransactionsChart
   }, {} as Record<string, number>);
 
   return (
-    <div className="rounded-2xl border border-[#2A2A2A] bg-gradient-to-br from-[#0F0F0F] to-[#1A1A1A] p-4 md:p-6 h-[350px] md:h-[450px]">
+    <div className="rounded-2xl border border-[#2A2A2A] bg-gradient-to-br from-[#0F0F0F] to-[#1A1A1A] p-4 md:p-6 h-[420px] md:h-[480px]">
       {/* Header */}
       <div className="flex items-start justify-between mb-4 md:mb-6">
         <div>
@@ -192,26 +192,27 @@ export function TodayTransactionsChart({ data, loading }: TodayTransactionsChart
       </div>
 
       {/* Chart */}
-      <div className="h-[250px] md:h-[340px] w-full">
+      <div className="h-[230px] md:h-[340px] w-full mt-2">
         <ResponsiveContainer width="100%" height="100%">
-          <ScatterChart margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+          <ScatterChart margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" vertical={false} />
             <XAxis 
               type="number"
               dataKey="timeValue"
               domain={['dataMin', 'dataMax']}
               stroke="#666" 
-              fontSize={11} 
+              fontSize={10} 
               tickLine={false} 
               axisLine={false}
               dy={8}
               tickFormatter={(value) => minutesToTime(value)}
-              label={{ value: 'Time of Day', position: 'insideBottom', offset: -5, fontSize: 10, fill: '#666' }}
+              // Remove label on mobile to prevent overlap
+              label={typeof window !== 'undefined' && window.innerWidth > 768 ? { value: 'Time of Day', position: 'insideBottom', offset: -5, fontSize: 10, fill: '#666' } : undefined}
             />
             <YAxis 
               dataKey="amount"
               stroke="#666" 
-              fontSize={11} 
+              fontSize={10} 
               tickLine={false} 
               axisLine={false}
               tickFormatter={(value) => {
@@ -219,7 +220,8 @@ export function TodayTransactionsChart({ data, loading }: TodayTransactionsChart
                 return `$${value}`;
               }}
               dx={-5}
-              label={{ value: 'Amount (USD)', angle: -90, position: 'insideLeft', fontSize: 10, fill: '#666' }}
+              // Remove label on mobile to prevent overlap
+              label={typeof window !== 'undefined' && window.innerWidth > 768 ? { value: 'Amount (USD)', angle: -90, position: 'insideLeft', fontSize: 10, fill: '#666' } : undefined}
             />
             <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3' }} />
             <Legend 

@@ -7,9 +7,17 @@ import { TrendingUp, Activity, CheckCircle2 } from 'lucide-react';
 interface DailyTrendChartProps {
   data: DailyTrendData | null;
   loading?: boolean;
+  activeInterval?: string;
+  onIntervalChange?: (interval: string) => void;
 }
 
-export function DailyTrendChart({ data, loading }: DailyTrendChartProps) {
+export function DailyTrendChart({ data, loading, activeInterval = 'all', onIntervalChange }: DailyTrendChartProps) {
+  const intervals = [
+    { label: 'Week', value: 'current_week' },
+    { label: 'Month', value: 'current_month' },
+    { label: 'All', value: 'all' },
+  ];
+
   if (loading) {
     return (
       <div className="rounded-2xl border border-[#2A2A2A] bg-gradient-to-br from-[#0F0F0F] to-[#1A1A1A] p-4 md:p-6 h-[350px] md:h-[450px]">
@@ -84,42 +92,54 @@ export function DailyTrendChart({ data, loading }: DailyTrendChartProps) {
   };
 
   return (
-    <div className="rounded-2xl border border-[#2A2A2A] bg-gradient-to-br from-[#0F0F0F] to-[#1A1A1A] p-4 md:p-6 h-[350px] md:h-[450px]">
+    <div className="rounded-2xl border border-[#2A2A2A] bg-gradient-to-br from-[#0F0F0F] to-[#1A1A1A] p-4 md:p-6 h-[400px] md:h-[480px]">
       {/* Header */}
-      <div className="flex items-start justify-between mb-4 md:mb-6">
-        <div>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4 md:mb-6">
+        <div className="space-y-1">
           <h3 className="text-base md:text-lg font-semibold text-white flex items-center gap-2">
             <Activity className="h-5 w-5 text-[#10B981]" />
             Daily Transaction Trends
           </h3>
-          <p className="text-xs md:text-sm text-gray-500 mt-1">
+          <p className="text-xs text-gray-500">
             Transaction volume and success metrics over time
           </p>
         </div>
         
-        {/* Summary Stats */}
-        <div className="hidden md:flex items-center gap-4">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#10B981]/10 border border-[#10B981]/20">
-            <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
-            <div className="text-right">
-              <p className="text-[10px] text-gray-400">Avg Success</p>
-              <p className="text-xs font-semibold text-[#10B981]">{data.summary.overall_success_rate.toFixed(1)}%</p>
-            </div>
+        <div className="flex flex-row items-center justify-between sm:justify-start gap-3">
+          {/* Interval Filters */}
+          <div className="flex bg-[#1A1A1A] p-1 rounded-xl border border-[#2A2A2A] flex-1 sm:flex-none">
+            {intervals.map((interval) => (
+              <button
+                key={interval.value}
+                onClick={() => onIntervalChange?.(interval.value)}
+                className={`flex-1 px-3 py-1.5 text-[10px] sm:text-xs font-medium rounded-lg transition-all duration-200 ${
+                  activeInterval === interval.value
+                    ? 'bg-[#317CFF] text-white shadow-lg'
+                    : 'text-gray-400 hover:text-white hover:bg-[#2A2A2A]'
+                }`}
+              >
+                {interval.label}
+              </button>
+            ))}
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#6366F1]/10 border border-[#6366F1]/20">
-            <TrendingUp className="h-4 w-4 text-[#6366F1]" />
-            <div className="text-right">
-              <p className="text-[10px] text-gray-400">Avg Daily</p>
-              <p className="text-xs font-semibold text-[#6366F1]">{data.summary.avg_daily_transactions.toLocaleString()}</p>
+
+          {/* Summary Stats - Hidden on Mobile to save space */}
+          <div className="hidden sm:flex items-center gap-4">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#10B981]/10 border border-[#10B981]/20">
+              <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
+              <div className="text-right">
+                <p className="text-[10px] text-gray-400">Avg Success</p>
+                <p className="text-xs font-semibold text-[#10B981]">{data.summary.overall_success_rate.toFixed(1)}%</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Chart */}
-      <div className="h-[250px] md:h-[340px] w-full">
+      <div className="h-[250px] md:h-[340px] w-full mt-4">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+          <LineChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
             <defs>
               <linearGradient id="colorTransactions" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#10B981" stopOpacity={0.8}/>
@@ -138,7 +158,7 @@ export function DailyTrendChart({ data, loading }: DailyTrendChartProps) {
             <XAxis 
               dataKey="date" 
               stroke="#666" 
-              fontSize={11} 
+              fontSize={10} 
               tickLine={false} 
               axisLine={false}
               dy={8}
@@ -146,7 +166,7 @@ export function DailyTrendChart({ data, loading }: DailyTrendChartProps) {
             <YAxis 
               yAxisId="left"
               stroke="#666" 
-              fontSize={11} 
+              fontSize={10} 
               tickLine={false} 
               axisLine={false}
               tickFormatter={(value) => {
@@ -159,7 +179,7 @@ export function DailyTrendChart({ data, loading }: DailyTrendChartProps) {
               yAxisId="right"
               orientation="right"
               stroke="#666" 
-              fontSize={11} 
+              fontSize={10} 
               tickLine={false} 
               axisLine={false}
               tickFormatter={(value) => `${value}%`}

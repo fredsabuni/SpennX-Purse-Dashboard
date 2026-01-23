@@ -49,7 +49,7 @@ export const spennxApi = {
     }) => apiClient.get(`/api/transactions/status/${status}`, { params }),
 
     // Daily Trend
-    getDailyTrend: (params?: { start_date?: string; end_date?: string }) => apiClient.get('/api/analytics/daily-trend', { params }),
+    getDailyTrend: (params?: { start_date?: string; end_date?: string; interval?: string }) => apiClient.get('/api/analytics/daily-trend', { params }),
 
     // Today's Transactions
     getTodayTransactions: () => apiClient.get('/api/transactions/today'),

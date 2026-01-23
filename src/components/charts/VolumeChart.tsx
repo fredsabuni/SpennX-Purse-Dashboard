@@ -9,9 +9,17 @@ interface VolumeChartProps {
     revenue: number;
   }>;
   loading?: boolean;
+  activeInterval?: string;
+  onIntervalChange?: (interval: string) => void;
 }
 
-export function VolumeChart({ data, loading }: VolumeChartProps) {
+export function VolumeChart({ data, loading, activeInterval = 'all', onIntervalChange }: VolumeChartProps) {
+  const intervals = [
+    { label: 'Week', value: 'week' },
+    { label: 'Month', value: 'month' },
+    { label: 'All', value: 'all' },
+  ];
+
   if (loading) {
     return (
         <div className="rounded-2xl border border-[#1F1F1F] bg-[#0A0A0A] p-4 md:p-6 h-[300px] md:h-[400px]">
@@ -26,16 +34,35 @@ export function VolumeChart({ data, loading }: VolumeChartProps) {
     );
   }
   return (
-    <div className="rounded-2xl border border-[#1F1F1F] bg-[#0A0A0A] p-4 md:p-6 h-[300px] md:h-[400px]">
-      <div className="flex items-center justify-between mb-4 md:mb-6">
-        <div>
+    <div className="rounded-2xl border border-[#1F1F1F] bg-[#0A0A0A] p-4 md:p-6 h-[350px] md:h-[450px]">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4 md:mb-6">
+        <div className="space-y-1">
           <h3 className="text-base md:text-lg font-semibold text-white">Transaction Volume</h3>
-          <p className="text-xs md:text-sm text-gray-500">Revenue and volume trends over time</p>
+          <p className="text-xs text-gray-400">Revenue and volume trends over time</p>
+        </div>
+
+        <div className="flex flex-row items-center justify-between sm:justify-start gap-3">
+          {/* Interval Filters */}
+          <div className="flex bg-[#1A1A1A] p-1 rounded-xl border border-[#2A2A2A] flex-1 sm:flex-none">
+            {intervals.map((interval) => (
+              <button
+                key={interval.value}
+                onClick={() => onIntervalChange?.(interval.value)}
+                className={`flex-1 px-3 py-1.5 text-[10px] sm:text-xs font-medium rounded-lg transition-all duration-200 ${
+                  activeInterval === interval.value
+                    ? 'bg-[#317CFF] text-white shadow-lg'
+                    : 'text-gray-400 hover:text-white hover:bg-[#2A2A2A]'
+                }`}
+              >
+                {interval.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-      <div className="h-[220px] md:h-[300px] w-full">
+      <div className="h-[220px] md:h-[300px] w-full mt-2">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 10, right: 5, left: -10, bottom: 0 }}>
+          <AreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
             <defs>
               <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#317CFF" stopOpacity={0.8}/>
@@ -56,7 +83,7 @@ export function VolumeChart({ data, loading }: VolumeChartProps) {
               tickLine={false} 
               axisLine={false}
               dy={10}
-              interval="preserveStartEnd"
+              interval={0}
             />
             <YAxis 
               stroke="#666" 

@@ -39,11 +39,17 @@ const calculateTrend = (current: number | string, previous: number | string) => 
 
 export default function DashboardPage() {
   const [dateRange, setDateRange] = useState<{start?: string, end?: string}>({});
+  const [dailyTrendInterval, setDailyTrendInterval] = useState('all');
+  const [volumeInterval, setVolumeInterval] = useState('all');
 
   const { data: statsData, isLoading: statsLoading } = useDashboardStats({ start_date: dateRange.start, end_date: dateRange.end });
   const { data: liveViewData, isLoading: liveViewLoading } = useLiveView({ start_date: dateRange.start, end_date: dateRange.end });
   const { data: pulseData, isLoading: pulseLoading } = useTransactionPulse({ start_date: dateRange.start, end_date: dateRange.end });
-  const { data: dailyTrendData, isLoading: dailyTrendLoading } = useDailyTrend({ start_date: dateRange.start, end_date: dateRange.end });
+  const { data: dailyTrendData, isLoading: dailyTrendLoading } = useDailyTrend({ 
+    start_date: dateRange.start, 
+    end_date: dateRange.end,
+    interval: dailyTrendInterval === 'all' ? undefined : dailyTrendInterval
+  });
   const { data: todayTransactionsData, isLoading: todayTransactionsLoading } = useTodayTransactions();
   // const { data: netIncomeData, isLoading: netIncomeLoading } = useNetIncome({ start_date: dateRange.start, end_date: dateRange.end });
 
@@ -65,17 +71,27 @@ export default function DashboardPage() {
     return 0;
   };
 
-  // Prepare chart data (Last 30 Days trend could be simulated here, using available day stats)
-  const chartData = [
+  // Prepare chart data based on interval
+  const allVolumeData = [
     { 
       name: 'Last Month', 
-      volume: parseNumber(liveView.previous_month.total_volume) / 4, 
-      revenue: parseNumber(liveView.previous_month.total_revenue) / 4 
+      volume: parseNumber(liveView.previous_month.total_volume), 
+      revenue: parseNumber(liveView.previous_month.total_revenue) 
+    },
+    { 
+      name: 'This Month', 
+      volume: parseNumber(liveView.current_month.total_volume), 
+      revenue: parseNumber(liveView.current_month.total_revenue) 
     },
     { 
       name: 'Last Week', 
       volume: parseNumber(liveView.previous_week.total_volume), 
       revenue: parseNumber(liveView.previous_week.total_revenue) 
+    },
+    { 
+      name: 'This Week', 
+      volume: parseNumber(liveView.current_week.total_volume), 
+      revenue: parseNumber(liveView.current_week.total_revenue) 
     },
     { 
       name: 'Yesterday', 
@@ -88,6 +104,16 @@ export default function DashboardPage() {
       revenue: parseNumber(liveView.today.total_revenue) 
     },
   ];
+
+  const chartData = allVolumeData.filter(item => {
+    if (volumeInterval === 'week') {
+      return ['This Week', 'Yesterday', 'Today'].includes(item.name);
+    }
+    if (volumeInterval === 'month') {
+      return ['This Month', 'Last Week', 'This Week', 'Yesterday', 'Today'].includes(item.name);
+    }
+    return true; // for 'all'
+  });
 
   return (
     <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-10">
@@ -179,13 +205,23 @@ export default function DashboardPage() {
 
       {/* Row 3: Daily Transaction Trends */}
       <div>
-        <DailyTrendChart data={dailyTrend} loading={dailyTrendLoading} />
+        <DailyTrendChart 
+          data={dailyTrend} 
+          loading={dailyTrendLoading} 
+          activeInterval={dailyTrendInterval}
+          onIntervalChange={setDailyTrendInterval}
+        />
       </div>
 
       {/* Row 4: Transaction Volume Chart */}
       <div className="grid gap-6 lg:grid-cols-1">
         <div>
-            <VolumeChart data={chartData} loading={liveViewLoading} />
+            <VolumeChart 
+              data={chartData} 
+              loading={liveViewLoading} 
+              activeInterval={volumeInterval}
+              onIntervalChange={setVolumeInterval}
+            />
         </div>
         {/* <div>
             <IncomePulseWidget data={netIncome} loading={netIncomeLoading} />
