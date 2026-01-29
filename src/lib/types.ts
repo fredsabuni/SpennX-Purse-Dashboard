@@ -139,6 +139,15 @@ export interface CurrencyBreakdown {
     percentage_of_total: number;
 }
 
+export interface TopPerformingCurrency {
+    currency: string;
+    transaction_count: number;
+    total_volume: string;
+    total_volume_usd: string;
+    avg_transaction_size: string;
+    percentage_of_total: string;
+}
+
 export interface DailyTrendDataPoint {
     date: string;
     transaction_count: number;

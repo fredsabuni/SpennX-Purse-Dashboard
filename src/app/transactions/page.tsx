@@ -6,23 +6,37 @@ import { RefreshControl } from '@/components/ui/RefreshControl';
 import { TransactionOverviewWidget } from '@/components/transactions/TransactionOverviewWidget';
 import { StatusPieChart } from '@/components/transactions/StatusPieChart';
 import { CurrencyVolumeChart } from '@/components/transactions/CurrencyVolumeChart';
+import { TopCurrenciesWidget } from '@/components/transactions/TopCurrenciesWidget';
 import { 
     useTransactionOverview, 
     useStatusBreakdown, 
-    useCurrencyBreakdown 
+    useCurrencyBreakdown,
+    useTopCurrencies 
 } from '@/hooks/useAnalyticsData';
 import { Bell, Download } from 'lucide-react';
 
 export default function TransactionsPage() {
     const [dateRange, setDateRange] = useState<{start?: string, end?: string}>({});
+    const [overviewPeriod, setOverviewPeriod] = useState('today');
+    const [topCurrenciesPeriod, setTopCurrenciesPeriod] = useState('today');
 
     const queryParams = {
         start_date: dateRange.start,
-        end_date: dateRange.end
+        end_date: dateRange.end,
+        period: overviewPeriod
+    };
+
+    const topCurrenciesParams = {
+        start_date: dateRange.start,
+        end_date: dateRange.end,
+        period: topCurrenciesPeriod
     };
 
     const { data: overviewData, isLoading: overviewLoading } = useTransactionOverview(queryParams);
     const { data: statusData, isLoading: statusLoading } = useStatusBreakdown(queryParams);
+    
+    // Fetch Top Currencies
+    const { data: topCurrenciesData, isLoading: topCurrenciesLoading } = useTopCurrencies(topCurrenciesParams);
     
     // Fetch comparative data for Currency Chart
     const { data: yesterdayData, isLoading: yesterdayLoading } = useCurrencyBreakdown({ interval: 'previous_day' });
@@ -44,12 +58,18 @@ export default function TransactionsPage() {
                 
                 <div className="flex flex-wrap items-center gap-2 md:gap-3">
                     <DateRangePicker 
-                        onRangeChange={(range) => setDateRange(range)} 
+                        onRangeChange={(range) => {
+                            setDateRange(range);
+                            if (range.start || range.end) {
+                                // If custom date range is picked, maybe we should clear the period?
+                                // Or keep it? Usually custom range overrides period.
+                            }
+                        }} 
                         className="w-full sm:w-auto"
                     />
                     
                     <RefreshControl 
-                        isLoading={overviewLoading || statusLoading || currencyLoading}
+                        isLoading={overviewLoading || statusLoading || currencyLoading || topCurrenciesLoading}
                         lastUpdated={new Date()}
                         className="w-full sm:w-auto"
                     />
@@ -67,6 +87,8 @@ export default function TransactionsPage() {
                     <TransactionOverviewWidget 
                         data={overviewData} 
                         loading={overviewLoading} 
+                        activePeriod={overviewPeriod}
+                        onPeriodChange={setOverviewPeriod}
                     />
                 </div>
             </div>
@@ -82,6 +104,16 @@ export default function TransactionsPage() {
                     lastWeekData={lastWeekData}
                     lastMonthData={lastMonthData}
                     loading={currencyLoading} 
+                />
+            </div>
+
+            {/* Top Currencies Section */}
+            <div className="grid gap-6">
+                <TopCurrenciesWidget 
+                    data={topCurrenciesData}
+                    loading={topCurrenciesLoading}
+                    activePeriod={topCurrenciesPeriod}
+                    onPeriodChange={setTopCurrenciesPeriod}
                 />
             </div>
         </div>

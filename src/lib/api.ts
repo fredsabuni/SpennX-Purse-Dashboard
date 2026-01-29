@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://spennx.kasuku.xyz'; http://0.0.0.0:8000
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://spennx.kasuku.xyz';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://0.0.0.0:8000';
 
 export const apiClient = axios.create({
     baseURL: API_BASE_URL,
@@ -36,11 +36,13 @@ export const spennxApi = {
     getTransaction: (id: string) => apiClient.get(`/api/transactions/${id}`),
 
     // Analytics Endpoints
-    getTransactionOverview: (params?: { start_date?: string; end_date?: string; interval?: string }) => apiClient.get('/api/analytics/transaction-overview', { params }),
+    getTransactionOverview: (params?: { start_date?: string; end_date?: string; interval?: string; period?: string }) => apiClient.get('/api/analytics/transaction-overview', { params }),
 
-    getStatusBreakdown: (params?: { start_date?: string; end_date?: string; interval?: string }) => apiClient.get('/api/analytics/status-breakdown', { params }),
+    getStatusBreakdown: (params?: { start_date?: string; end_date?: string; period?: string }) => apiClient.get('/api/analytics/status-breakdown', { params }),
 
     getCurrencyBreakdown: (params?: { start_date?: string; end_date?: string; interval?: string; status?: string }) => apiClient.get('/api/analytics/currency-breakdown', { params }),
+
+    getTopCurrencies: (params?: { period?: string; start_date?: string; end_date?: string; status?: string }) => apiClient.get('/api/analytics/top-currencies', { params }),
 
     // Transactions by status
     getTransactionsByStatus: (status: string, params?: {

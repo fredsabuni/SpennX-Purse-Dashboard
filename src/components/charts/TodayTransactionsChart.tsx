@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts';
 import { TodayTransactionsData } from '@/lib/types';
 import { Clock, TrendingUp, CheckCircle2, AlertCircle, XCircle } from 'lucide-react';
@@ -21,6 +22,11 @@ const STATUS_COLORS = {
 } as const;
 
 export function TodayTransactionsChart({ data, loading }: TodayTransactionsChartProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   if (loading) {
     return (
       <div className="rounded-2xl border border-[#2A2A2A] bg-gradient-to-br from-[#0F0F0F] to-[#1A1A1A] p-4 md:p-6 h-[350px] md:h-[450px]">
@@ -106,7 +112,7 @@ export function TodayTransactionsChart({ data, loading }: TodayTransactionsChart
           <div className="flex items-center gap-2 mb-2">
             <div 
               className="w-3 h-3 rounded-full" 
-              style={{ backgroundColor: STATUS_COLORS[txn.status as keyof typeof STATUS_COLORS] }}
+              style={{ backgroundColor: STATUS_COLORS[txn.status as keyof typeof STATUS_COLORS] || '#666' }}
             />
             <span className="text-xs font-semibold text-white capitalize">{txn.status}</span>
             <span className="text-xs text-gray-500">• {txn.fullTime}</span>
@@ -206,8 +212,8 @@ export function TodayTransactionsChart({ data, loading }: TodayTransactionsChart
               axisLine={false}
               dy={8}
               tickFormatter={(value) => minutesToTime(value)}
-              // Remove label on mobile to prevent overlap
-              label={typeof window !== 'undefined' && window.innerWidth > 768 ? { value: 'Time of Day', position: 'insideBottom', offset: -5, fontSize: 10, fill: '#666' } : undefined}
+              // Use mounted check to avoid hydration mismatch
+              label={mounted && window.innerWidth > 768 ? { value: 'Time of Day', position: 'insideBottom', offset: -5, fontSize: 10, fill: '#666' } : undefined}
             />
             <YAxis 
               dataKey="amount"
@@ -220,8 +226,8 @@ export function TodayTransactionsChart({ data, loading }: TodayTransactionsChart
                 return `$${value}`;
               }}
               dx={-5}
-              // Remove label on mobile to prevent overlap
-              label={typeof window !== 'undefined' && window.innerWidth > 768 ? { value: 'Amount (USD)', angle: -90, position: 'insideLeft', fontSize: 10, fill: '#666' } : undefined}
+              // Use mounted check to avoid hydration mismatch
+              label={mounted && window.innerWidth > 768 ? { value: 'Amount (USD)', angle: -90, position: 'insideLeft', fontSize: 10, fill: '#666' } : undefined}
             />
             <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3' }} />
             <Legend 
@@ -237,13 +243,13 @@ export function TodayTransactionsChart({ data, loading }: TodayTransactionsChart
                 key={status}
                 name={status}
                 data={chartData.filter(d => d.status === status)}
-                fill={STATUS_COLORS[status as keyof typeof STATUS_COLORS]}
+                fill={STATUS_COLORS[status as keyof typeof STATUS_COLORS] || '#666'}
                 shape="circle"
               >
                 {chartData.filter(d => d.status === status).map((entry, index) => (
                   <Cell 
                     key={`cell-${index}`} 
-                    fill={STATUS_COLORS[entry.status as keyof typeof STATUS_COLORS]}
+                    fill={STATUS_COLORS[entry.status as keyof typeof STATUS_COLORS] || '#666'}
                     stroke="#fff"
                     strokeWidth={2}
                     r={8}

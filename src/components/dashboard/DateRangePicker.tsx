@@ -45,6 +45,13 @@ export function DateRangePicker({ className, onRangeChange }: DateRangePickerPro
       }
   }, [isOpen, dateRange]);
 
+  const handleReset = () => {
+    setTempDateRange([null, null]);
+    setDateRange([null, null]);
+    setIsOpen(false);
+    onRangeChange({ start: undefined, end: undefined });
+  };
+
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -83,19 +90,27 @@ export function DateRangePicker({ className, onRangeChange }: DateRangePickerPro
                     monthsShown={2}
                 />
             </div>
-          <div className="flex items-center justify-end gap-2 p-3 border-t border-[#1F1F1F]/50 bg-[#0A0A0A]">
+          <div className="flex items-center justify-between p-3 border-t border-[#1F1F1F]/50 bg-[#0A0A0A]">
             <button 
-                onClick={handleCancel}
-                className="text-xs text-gray-400 hover:text-white transition-colors px-2 py-1"
+                onClick={handleReset}
+                className="text-xs text-red-500 hover:text-red-400 transition-colors px-2 py-1 font-medium"
             >
-                Cancel
+                Reset
             </button>
-            <button 
-                onClick={handleApply}
-                className="text-xs bg-[#317CFF] hover:bg-[#2563EB] text-white px-3 py-1.5 rounded-md transition-colors font-medium"
-            >
-                Apply Range
-            </button>
+            <div className="flex items-center gap-2">
+                <button 
+                    onClick={handleCancel}
+                    className="text-xs text-gray-400 hover:text-white transition-colors px-2 py-1"
+                >
+                    Cancel
+                </button>
+                <button 
+                    onClick={handleApply}
+                    className="text-xs bg-[#317CFF] hover:bg-[#2563EB] text-white px-3 py-1.5 rounded-md transition-colors font-medium"
+                >
+                    Apply Range
+                </button>
+            </div>
           </div>
         </PopoverContent>
       </Popover>

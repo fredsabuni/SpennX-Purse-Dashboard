@@ -5,13 +5,30 @@ import { ArrowUpRight, ArrowDownLeft, XCircle, AlertCircle, CheckCircle2, Clock 
 interface TransactionOverviewWidgetProps {
     data?: TransactionOverview;
     loading?: boolean;
+    activePeriod?: string;
+    onPeriodChange?: (period: string) => void;
 }
 
-export function TransactionOverviewWidget({ data, loading }: TransactionOverviewWidgetProps) {
+export function TransactionOverviewWidget({ data, loading, activePeriod = 'today', onPeriodChange }: TransactionOverviewWidgetProps) {
+    const periods = [
+        { label: 'Today', value: 'today' },
+        { label: 'Yesterday', value: 'yesterday' },
+        { label: 'Week', value: 'week' },
+        { label: 'Month', value: 'month' },
+        { label: 'YTD', value: 'ytd' },
+        { label: 'All', value: 'all' },
+    ];
+
     if (loading) {
         return (
             <div className="w-full rounded-2xl border border-[#1F1F1F] bg-[#0A0A0A] p-6">
-                <div className="h-6 w-48 bg-[#1F1F1F] animate-pulse rounded mb-6" />
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div className="space-y-2">
+                        <div className="h-6 w-48 bg-[#1F1F1F] animate-pulse rounded" />
+                        <div className="h-4 w-64 bg-[#1F1F1F] animate-pulse rounded" />
+                    </div>
+                    <div className="h-10 w-full md:w-64 bg-[#1F1F1F] animate-pulse rounded-xl" />
+                </div>
                 <div className="space-y-4">
                     {[1, 2, 3, 4, 5].map((i) => (
                         <div key={i} className="flex justify-between items-center py-3 border-b border-[#1F1F1F]/50">
@@ -24,7 +41,15 @@ export function TransactionOverviewWidget({ data, loading }: TransactionOverview
         );
     }
 
-    if (!data) return null;
+    if (!data) {
+        return (
+            <div className="w-full rounded-2xl border border-[#1F1F1F] bg-[#0A0A0A] p-6 text-center text-gray-400">
+                <div className="flex flex-col items-center justify-center py-8">
+                    <p>No transaction data available.</p>
+                </div>
+            </div>
+        );
+    }
 
     const statusConfig = {
         success: { label: 'Success', icon: CheckCircle2, color: 'text-green-500', bg: 'bg-green-500/10' },
@@ -36,9 +61,28 @@ export function TransactionOverviewWidget({ data, loading }: TransactionOverview
 
     return (
         <div className="w-full rounded-2xl border border-[#1F1F1F] bg-[#0A0A0A] overflow-hidden">
-            <div className="p-6 border-b border-[#1F1F1F]">
-                <h3 className="text-lg font-semibold text-white">Transaction Status Overview</h3>
-                <p className="text-sm text-gray-400">Detailed breakdown by transaction status</p>
+            <div className="p-6 border-b border-[#1F1F1F] flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h3 className="text-lg font-semibold text-white">Transaction Status Overview</h3>
+                    <p className="text-sm text-gray-400">Detailed breakdown by transaction status</p>
+                </div>
+
+                {/* Period Filters */}
+                <div className="flex bg-[#1A1A1A] p-1 rounded-xl border border-[#2A2A2A] overflow-x-auto no-scrollbar">
+                    {periods.map((period) => (
+                        <button
+                            key={period.value}
+                            onClick={() => onPeriodChange?.(period.value)}
+                            className={`px-3 py-1.5 text-[10px] sm:text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap ${
+                                activePeriod === period.value
+                                    ? 'bg-[#317CFF] text-white shadow-lg'
+                                    : 'text-gray-400 hover:text-white hover:bg-[#2A2A2A]'
+                            }`}
+                        >
+                            {period.label}
+                        </button>
+                    ))}
+                </div>
             </div>
             
             <div className="overflow-x-auto">

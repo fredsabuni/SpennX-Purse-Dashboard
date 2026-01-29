@@ -40,3 +40,12 @@ body {
   background: rgba(1, 1, 1, 0.8);
   backdrop-filter: blur(10px);
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
