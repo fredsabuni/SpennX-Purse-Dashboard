@@ -11,6 +11,7 @@ import {
   CreditCard,
   Users,
   Bell,
+  Coins,
   X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -18,6 +19,7 @@ import { cn } from '@/lib/utils';
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Transactions', href: '/transactions', icon: ArrowRightLeft },
+  { name: 'Fee Checker', href: '/fees', icon: Coins },
   // { name: 'Analytics', href: '/analytics', icon: PieChart },
   // { name: 'Cards', href: '/cards', icon: CreditCard },
   // { name: 'Recipients', href: '/recipients', icon: Users },

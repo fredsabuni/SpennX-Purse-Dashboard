@@ -5,11 +5,10 @@ import { StatsCard } from '@/components/dashboard/StatsCard';
 import { VolumeChart } from '@/components/charts/VolumeChart';
 import { DailyTrendChart } from '@/components/charts/DailyTrendChart';
 import { TodayTransactionsChart } from '@/components/charts/TodayTransactionsChart';
-import { PeriodStatsTable } from '@/components/dashboard/PeriodStatsTable';
-// import { IncomePulseWidget } from '@/components/dashboard/IncomePulseWidget';
+import { PeriodStatsTable } from '@/components/dashboard/PeriodStatsTable'; 
 import { DateRangePicker } from '@/components/dashboard/DateRangePicker';
 import { RefreshControl } from '@/components/ui/RefreshControl';
-import { DollarSign, TrendingUp, Users, AlertCircle, Zap, Bell } from 'lucide-react';
+import { DollarSign, TrendingUp, Zap, Bell } from 'lucide-react';
 import { MOCK_STATS, MOCK_LIVE_VIEW, MOCK_PULSE, MOCK_DAILY_TREND } from '@/lib/mock-data';
 
 // Calculate percentage change between two values
